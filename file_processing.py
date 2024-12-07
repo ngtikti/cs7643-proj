@@ -32,14 +32,14 @@ os.makedirs(train_folder, exist_ok=True)
 os.makedirs(test_folder, exist_ok=True)
 
 label_mapping = {"age" : 0, "gender" : 1, "race" : 2}
-label_to_process = 'age' #'gender' 'race' 'age' #<< change this for the analysis to change
+label_to_process = 'race' #'gender' 'race' 'age' #<< change this for the analysis to change
 
 
 # Get a list of all image files
 image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg")]
 
 # Split the data into training and testing sets (80% train, 20% test)
-train_files, test_files = train_test_split(image_files, test_size=0.2, random_state=42)
+train_files, test_files = train_test_split(image_files, test_size=0.13, random_state=42)
 
 # Move training files in format "seg_train/label_to_predict/class_of_interest
 #processing for age
@@ -79,3 +79,16 @@ test_image_path = test_folder + '/' + label_to_process
 
 print(f"Training files moved to: {train_image_path}")
 print(f"Testing files moved to: {test_image_path}")
+batch_size = 32
+transform = transforms.Compose([transforms.Resize(150),
+                                transforms.ToTensor()])
+
+test_data = datasets.ImageFolder(test_image_path, transform=transform)
+train_data = datasets.ImageFolder(train_image_path, transform=transform)
+train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True) # TODO: use the ImageFolder dataset to create the DataLoader
+test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=True) 
+print (type (train_data))
+
+
+print (f'Length of Train data & Test data = {len (train_data)} & {len (test_data)}' )
+print (f'Shape = {train_data[0][0].shape}')
