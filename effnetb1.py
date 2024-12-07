@@ -96,22 +96,22 @@ print (f"Original train data = {train_size}, \nAfter split : {train_size-split} 
 print (f'Shape = {train_data[0][0].shape}') 
 
 
-model_b7 = models.efficientnet_b7(weights = net_weights) #weights='DEFAULT' or weights='IMAGENET1K_V1
-print(model_b7)
+model_b1 = models.efficientnet_b1(weights = net_weights) #weights='DEFAULT' or weights='IMAGENET1K_V1
+print(model_b1)
 
 #updating classifier, with kevin's structure
-model_b7.classifier[1] = nn.Sequential(
+model_b1.classifier[1] = nn.Sequential(
     nn.Dropout(0.4),
-    nn.BatchNorm1d(2560),  # EfficientNet B7 has 1280 features before the classifier
+    nn.BatchNorm1d(1280),  # EfficientNet B7 has 1280 features before the classifier
     nn.ReLU(),
-    nn.Linear(2560, 256),
+    nn.Linear(1280, 256),
     nn.ReLU(),
     nn.Linear(256, 256),
     nn.Dropout(0.5),
     nn.Linear(256, num_classes)  # Output layer with num_classes
 )
 
-model = model_b7.to(device)
+model = model_b1.to(device)
 
 # Count total parameters
 total_params = sum(p.numel() for p in model.parameters())
@@ -254,7 +254,7 @@ plt.legend()
 
 # Save the plot to /results/ directory
 plt.tight_layout()
-output_path = f'results/training_validation_curves_b7_{str(net_weights)}_{label_to_process}_{epochs}.png'
+output_path = f'results/training_validation_curves_b1_{str(net_weights)}_{label_to_process}_{epochs}.png'
 plt.savefig(output_path, dpi=300)
 print(f"Plot saved to {output_path}")
 
